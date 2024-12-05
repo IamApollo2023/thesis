@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { signIn } from "next-auth/react";
+import { signIn, signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
 interface AuthData {
@@ -73,6 +73,7 @@ export function useAuth() {
       router.push("/dashboard");
       return true;
     } catch (err) {
+      console.error('Login error:', err);
       setError("An error occurred. Please try again.");
       return false;
     } finally {
@@ -103,6 +104,7 @@ export function useAuth() {
       // Automatically log in after successful registration
       return await login(email, password);
     } catch (err) {
+      console.error('Registration error:', err);
       setError(err instanceof Error ? err.message : "Registration failed");
       return false;
     } finally {
@@ -110,9 +112,18 @@ export function useAuth() {
     }
   };
 
+  const signOutUser = async () => {
+    try {
+      await signOut({ callbackUrl: "/" });
+    } catch (error) {
+      console.error('Sign out error:', error);
+    }
+  };
+
   return {
     login,
     register,
+    signOutUser,
     isLoading,
     error,
     validationErrors,

@@ -3,12 +3,12 @@
 import { signIn } from "next-auth/react";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import Image from 'next/image';
 
 export default function SignIn() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
@@ -33,14 +33,13 @@ export default function SignIn() {
       });
 
       if (result?.error) {
-        setError("Invalid credentials");
+        // Handle error here if needed
         return;
       }
 
       router.push("/dashboard");
-    } catch (error) {
-      console.error(error);
-      setError("Something went wrong");
+    } catch (err) {
+      console.error(err);
     }
   };
 
@@ -50,7 +49,8 @@ export default function SignIn() {
         callbackUrl: "/",
         redirect: true,
       });
-    } catch (error) {
+    } catch (err) {
+      console.error('Google sign-in error:', err);
       router.push("/");
     }
   };
@@ -97,10 +97,6 @@ export default function SignIn() {
             </div>
           </div>
 
-          {error && (
-            <div className="text-red-500 text-sm text-center">{error}</div>
-          )}
-
           <div>
             <button
               type="submit"
@@ -128,7 +124,15 @@ export default function SignIn() {
               onClick={handleGoogleSignIn}
               className="w-full bg-white text-gray-700 font-semibold py-2 px-4 border border-gray-300 rounded-lg shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 flex items-center justify-center gap-2"
             >
-              <img src="/google.svg" alt="Google logo" className="w-5 h-5" />
+              <div className="flex justify-center">
+                <Image 
+                  src="/google.svg" 
+                  alt="Google Logo" 
+                  width={20} 
+                  height={20}
+                  className="mr-2"
+                />
+              </div>
               Sign in with Google
             </button>
           </div>

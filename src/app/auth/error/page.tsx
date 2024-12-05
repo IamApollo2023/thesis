@@ -1,9 +1,17 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 
 export default function AuthError() {
+  return (
+    <Suspense fallback={<div className="flex min-h-screen flex-col items-center justify-center">Loading...</div>}>
+      <AuthErrorContent />
+    </Suspense>
+  );
+}
+
+function AuthErrorContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const error = searchParams.get('error');
@@ -29,7 +37,7 @@ export default function AuthError() {
           <p className="mt-2 text-gray-600">
             {error === 'OAuthSignin' || error === 'OAuthCallback'
               ? 'Sign in was cancelled. Redirecting back to sign in page...'
-              : 'There was an error signing in. Please try again.'}
+              : 'An error occurred during authentication. Please try again.'}
           </p>
           <button
             onClick={() => router.push('/auth/signin')}

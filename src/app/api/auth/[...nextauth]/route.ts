@@ -8,7 +8,7 @@ import bcrypt from "bcryptjs";
 
 const prisma = new PrismaClient();
 
-export const authOptions: AuthOptions = {
+const authOptions: AuthOptions = {
   adapter: PrismaAdapter(prisma),
   providers: [
     GoogleProvider({
@@ -54,7 +54,7 @@ export const authOptions: AuthOptions = {
     error: "/auth/error",
   },
   callbacks: {
-    async signIn({ user, account, profile, email, credentials }) {
+    async signIn({ account, profile }) {
       if (account?.provider === "google") {
         if (!profile?.email) {
           return false;
@@ -89,4 +89,5 @@ export const authOptions: AuthOptions = {
 
 const handler = NextAuth(authOptions);
 
-export { handler as GET, handler as POST };
+export const GET = handler;
+export const POST = handler;
